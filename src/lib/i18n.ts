@@ -1,0 +1,563 @@
+import { SupportedLanguage } from "@/types";
+
+export type UIKey =
+  | "appName"
+  | "handMode"
+  | "eyeMode"
+  | "cctv"
+  | "nurse"
+  | "ward"
+  | "logs"
+  | "report"
+  | "about"
+  | "emergency"
+  | "startCamera"
+  | "stopCamera"
+  | "cameraPermissionHint"
+  | "loadingModel"
+  | "downloadingWasm"
+  | "waitingGesture"
+  | "gestureDetected"
+  | "confidenceLabel"
+  | "faceDetected"
+  | "noFace"
+  | "noHand"
+  | "handsDetected"
+  | "paused"
+  | "voiceAlertsActive"
+  | "replayLastAlert"
+  | "gestureGuide"
+  | "demoMode"
+  | "demoModeActive"
+  | "sessionShare"
+  | "copyUrl"
+  | "copied"
+  | "live"
+  | "reconnecting"
+  | "disconnected"
+  | "nurseReplyTitle"
+  | "sendMessage"
+  | "onMyWay"
+  | "pleaseWait"
+  | "doctorNotified"
+  | "acknowledge"
+  | "escalate"
+  | "resolve"
+  | "pending"
+  | "autoEscalated";
+
+type Dict = Record<UIKey, string>;
+
+const en: Dict = {
+  appName: "CareSpeak",
+  handMode: "Hand Mode",
+  eyeMode: "Eye Mode",
+  cctv: "CCTV",
+  nurse: "Nurse",
+  ward: "Ward",
+  logs: "Logs",
+  report: "Report",
+  about: "About",
+  emergency: "Emergency",
+  startCamera: "Start Camera",
+  stopCamera: "Stop Camera",
+  cameraPermissionHint: "Chrome will ask for camera permission",
+  loadingModel: "Loading tracking model...",
+  downloadingWasm: "Downloading AI model (cached for offline use)",
+  waitingGesture: "Waiting for gesture...",
+  gestureDetected: "Gesture detected",
+  confidenceLabel: "confidence",
+  faceDetected: "Face detected — tracking eyes",
+  noFace: "No face in view",
+  noHand: "No hand detected",
+  handsDetected: "hand(s) detected",
+  paused: "PAUSED",
+  voiceAlertsActive: "Voice alerts active",
+  replayLastAlert: "Replay Last Alert",
+  gestureGuide: "Gesture Guide",
+  demoMode: "Demo Mode",
+  demoModeActive: "Demo Mode Active",
+  sessionShare: "Session ID — share with nurse",
+  copyUrl: "Copy Dashboard URL",
+  copied: "Copied!",
+  live: "Live",
+  reconnecting: "Reconnecting...",
+  disconnected: "Disconnected",
+  nurseReplyTitle: "Message from nurse",
+  sendMessage: "Send",
+  onMyWay: "On my way",
+  pleaseWait: "Please wait",
+  doctorNotified: "Doctor notified",
+  acknowledge: "Acknowledge",
+  escalate: "Escalate",
+  resolve: "Resolve",
+  pending: "pending",
+  autoEscalated: "AUTO-ESCALATED",
+};
+
+const hi: Dict = {
+  appName: "केयरस्पीक",
+  handMode: "हाथ मोड",
+  eyeMode: "आँख मोड",
+  cctv: "सीसीटीवी",
+  nurse: "नर्स",
+  ward: "वार्ड",
+  logs: "लॉग्स",
+  report: "रिपोर्ट",
+  about: "हमारे बारे में",
+  emergency: "आपातकाल",
+  startCamera: "कैमरा चलाएँ",
+  stopCamera: "कैमरा बंद करें",
+  cameraPermissionHint: "क्रोम कैमरा अनुमति मांगेगा",
+  loadingModel: "मॉडल लोड हो रहा है...",
+  downloadingWasm: "AI मॉडल डाउनलोड हो रहा है (ऑफ़लाइन उपयोग हेतु सेव)",
+  waitingGesture: "इशारे की प्रतीक्षा में...",
+  gestureDetected: "इशारा पहचाना गया",
+  confidenceLabel: "विश्वासता",
+  faceDetected: "चेहरा मिला — आँखों पर नज़र",
+  noFace: "कोई चेहरा नहीं",
+  noHand: "कोई हाथ नहीं मिला",
+  handsDetected: "हाथ पाए गए",
+  paused: "रुका हुआ",
+  voiceAlertsActive: "वॉयस अलर्ट सक्रिय",
+  replayLastAlert: "अंतिम अलर्ट दोबारा",
+  gestureGuide: "इशारा गाइड",
+  demoMode: "डेमो मोड",
+  demoModeActive: "डेमो मोड सक्रिय",
+  sessionShare: "सेशन आईडी — नर्स के साथ साझा करें",
+  copyUrl: "डैशबोर्ड URL कॉपी करें",
+  copied: "कॉपी हो गया!",
+  live: "लाइव",
+  reconnecting: "फिर जुड़ रहे हैं...",
+  disconnected: "डिस्कनेक्टेड",
+  nurseReplyTitle: "नर्स का संदेश",
+  sendMessage: "भेजें",
+  onMyWay: "मैं आ रहा हूँ",
+  pleaseWait: "कृपया प्रतीक्षा करें",
+  doctorNotified: "डॉक्टर को सूचित किया गया",
+  acknowledge: "स्वीकार करें",
+  escalate: "एस्कलेट करें",
+  resolve: "हल करें",
+  pending: "लंबित",
+  autoEscalated: "स्वतः-एस्कलेटेड",
+};
+
+const bn: Dict = {
+  appName: "কেয়ারস্পিক",
+  handMode: "হাত মোড",
+  eyeMode: "চোখের মোড",
+  cctv: "সিসিটিভি",
+  nurse: "নার্স",
+  ward: "ওয়ার্ড",
+  logs: "লগ",
+  report: "রিপোর্ট",
+  about: "আমাদের সম্পর্কে",
+  emergency: "জরুরি",
+  startCamera: "ক্যামেরা চালু করুন",
+  stopCamera: "ক্যামেরা বন্ধ করুন",
+  cameraPermissionHint: "ক্রোম ক্যামেরার অনুমতি চাইবে",
+  loadingModel: "মডেল লোড হচ্ছে...",
+  downloadingWasm: "AI মডেল ডাউনলোড হচ্ছে (অফলাইনের জন্য সংরক্ষিত)",
+  waitingGesture: "অঙ্গভঙ্গির অপেক্ষায়...",
+  gestureDetected: "অঙ্গভঙ্গি শনাক্ত",
+  confidenceLabel: "আত্মবিশ্বাস",
+  faceDetected: "মুখ শনাক্ত — চোখে নজর",
+  noFace: "কোনো মুখ নেই",
+  noHand: "কোনো হাত নেই",
+  handsDetected: "হাত পাওয়া গেছে",
+  paused: "বিরতি",
+  voiceAlertsActive: "ভয়েস অ্যালার্ট সক্রিয়",
+  replayLastAlert: "শেষ অ্যালার্ট আবার",
+  gestureGuide: "অঙ্গভঙ্গি গাইড",
+  demoMode: "ডেমো মোড",
+  demoModeActive: "ডেমো মোড সক্রিয়",
+  sessionShare: "সেশন আইডি — নার্সের সাথে ভাগ করুন",
+  copyUrl: "ড্যাশবোর্ড URL কপি করুন",
+  copied: "কপি হয়েছে!",
+  live: "লাইভ",
+  reconnecting: "পুনরায় সংযোগ হচ্ছে...",
+  disconnected: "সংযোগ বিচ্ছিন্ন",
+  nurseReplyTitle: "নার্সের বার্তা",
+  sendMessage: "পাঠান",
+  onMyWay: "আমি আসছি",
+  pleaseWait: "অনুগ্রহ করে অপেক্ষা করুন",
+  doctorNotified: "ডাক্তারকে জানানো হয়েছে",
+  acknowledge: "স্বীকার করুন",
+  escalate: "এস্কেলেট করুন",
+  resolve: "সমাধান করুন",
+  pending: "অপেক্ষমাণ",
+  autoEscalated: "স্বয়ংক্রিয়-এস্কেলেটেড",
+};
+
+const ta: Dict = {
+  appName: "கேர்ஸ்பீக்",
+  handMode: "கை பயன்முறை",
+  eyeMode: "கண் பயன்முறை",
+  cctv: "கேமரா",
+  nurse: "நர்ஸ்",
+  ward: "வார்டு",
+  logs: "பதிவுகள்",
+  report: "அறிக்கை",
+  about: "எங்களைப் பற்றி",
+  emergency: "அவசரம்",
+  startCamera: "கேமராவைத் தொடங்கு",
+  stopCamera: "கேமராவை நிறுத்து",
+  cameraPermissionHint: "குரோம் கேமரா அனுமதி கேட்கும்",
+  loadingModel: "மாடல் ஏற்றப்படுகிறது...",
+  downloadingWasm: "AI மாடல் பதிவிறக்கம் (ஆஃப்லைனுக்கு சேமிப்பு)",
+  waitingGesture: "சைஞைக்காக காத்திருக்கிறது...",
+  gestureDetected: "சைஞை கண்டறியப்பட்டது",
+  confidenceLabel: "நம்பிக்கை",
+  faceDetected: "முகம் கண்டறியப்பட்டது — கண்களில் கவனம்",
+  noFace: "முகம் இல்லை",
+  noHand: "கை கண்டறியப்படவில்லை",
+  handsDetected: "கைகள் கண்டறியப்பட்டன",
+  paused: "இடைநிறுத்தம்",
+  voiceAlertsActive: "குரல் எச்சரிக்கை செயலில்",
+  replayLastAlert: "கடைசி எச்சரிக்கை மீண்டும்",
+  gestureGuide: "சைஞை வழிகாட்டி",
+  demoMode: "டெமோ முறை",
+  demoModeActive: "டெமோ முறை செயலில்",
+  sessionShare: "அமர்வு ஐடி — நர்ஸுடன் பங்கிடுங்கள்",
+  copyUrl: "டாஷ்போர்டு URL நகல்",
+  copied: "நகலெடுக்கப்பட்டது!",
+  live: "நேரலை",
+  reconnecting: "மீண்டும் இணைக்கிறது...",
+  disconnected: "துண்டிக்கப்பட்டது",
+  nurseReplyTitle: "நர்ஸின் செய்தி",
+  sendMessage: "அனுப்பு",
+  onMyWay: "நான் வருகிறேன்",
+  pleaseWait: "காத்திருக்கவும்",
+  doctorNotified: "மருத்துவருக்குத் தெரிவிக்கப்பட்டது",
+  acknowledge: "ஒப்புக்கொள்",
+  escalate: "மேல்நிலைக்கு அனுப்பு",
+  resolve: "தீர்வு செய்",
+  pending: "நிலுவையில்",
+  autoEscalated: "தானியங்கி-மேல்நிலை",
+};
+
+const te: Dict = {
+  appName: "కేర్‌స్పీక్",
+  handMode: "చేతి మోడ్",
+  eyeMode: "కంటి మోడ్",
+  cctv: "సీసీటీవి",
+  nurse: "నర్స్",
+  ward: "వార్డు",
+  logs: "లాగ్‌లు",
+  report: "నివేదిక",
+  about: "మా గురించి",
+  emergency: "అత్యవసరం",
+  startCamera: "కెమెరా ప్రారంభించు",
+  stopCamera: "కెమెరా ఆపు",
+  cameraPermissionHint: "క్రోమ్ కెమెరా అనుమతి అడుగుతుంది",
+  loadingModel: "మోడల్ లోడ్ అవుతోంది...",
+  downloadingWasm: "AI మోడల్ డౌన్‌లోడ్ అవుతోంది (ఆఫ్‌లైన్ కోసం)",
+  waitingGesture: "సంజ్ఞ కోసం వేచి ఉన్నారు...",
+  gestureDetected: "సంజ్ఞ గుర్తించబడింది",
+  confidenceLabel: "నమ్మకం",
+  faceDetected: "ముఖం గుర్తించబడింది — కళ్లపై దృష్టి",
+  noFace: "ముఖం లేదు",
+  noHand: "చేతి గుర్తింపు లేదు",
+  handsDetected: "చేతులు గుర్తించబడ్డాయి",
+  paused: "పాజ్ చేయబడింది",
+  voiceAlertsActive: "వాయిస్ హెచ్చరికలు చురుకుగా",
+  replayLastAlert: "చివరి హెచ్చరిక మళ్లి",
+  gestureGuide: "సంజ్ఞ గైడ్",
+  demoMode: "డెమో మోడ్",
+  demoModeActive: "డెమో మోడ్ చురుకుగా",
+  sessionShare: "సెషన్ ID — నర్స్‌తో పంచండి",
+  copyUrl: "డాష్‌బోర్డ్ URL కాపీ",
+  copied: "కాపీ అయింది!",
+  live: "లైవ్",
+  reconnecting: "మళ్లి కనెక్ట్ అవుతోంది...",
+  disconnected: "డిస్‌కనెక్ట్",
+  nurseReplyTitle: "నర్స్ సందేశం",
+  sendMessage: "పంపు",
+  onMyWay: "నేను వస్తున్నాను",
+  pleaseWait: "దయచేసి వేచి ఉండండి",
+  doctorNotified: "డాక్టర్‌కు తెలియజేయబడింది",
+  acknowledge: "అంగీకరించు",
+  escalate: "ఎస్కలేట్ చేయండి",
+  resolve: "పరిష్కరించు",
+  pending: "పెండింగ్",
+  autoEscalated: "ఆటో-ఎస్కలేటెడ్",
+};
+
+const mr: Dict = {
+  appName: "केअरस्पीक",
+  handMode: "हात मोड",
+  eyeMode: "डोळा मोड",
+  cctv: "सीसीटीव्ही",
+  nurse: "नर्स",
+  ward: "वॉर्ड",
+  logs: "लॉग",
+  report: "अहवाल",
+  about: "आमच्याविषयी",
+  emergency: "आपत्कालीन",
+  startCamera: "कॅमेरा सुरू करा",
+  stopCamera: "कॅमेरा बंद करा",
+  cameraPermissionHint: "क्रोम कॅमेरा परवानगी विचारेल",
+  loadingModel: "मॉडेल लोड होत आहे...",
+  downloadingWasm: "AI मॉडेल डाउनलोड होत आहे (ऑफलाइनसाठी)",
+  waitingGesture: "हालचालीची वाट पाहत आहे...",
+  gestureDetected: "हालचाल ओळखली",
+  confidenceLabel: "विश्वास",
+  faceDetected: "चेहरा आढळला — डोळ्यांवर लक्ष",
+  noFace: "चेहरा नाही",
+  noHand: "हात आढळला नाही",
+  handsDetected: "हात आढळले",
+  paused: "थांबवले",
+  voiceAlertsActive: "आवाज सूचना सक्रिय",
+  replayLastAlert: "शेवटची सूचना पुन्हा",
+  gestureGuide: "हालचाल मार्गदर्शक",
+  demoMode: "डेमो मोड",
+  demoModeActive: "डेमो मोड सक्रिय",
+  sessionShare: "सेशन आयडी — नर्सशी सामायिक करा",
+  copyUrl: "डॅशबोर्ड URL कॉपी करा",
+  copied: "कॉपी झाले!",
+  live: "लाइव्ह",
+  reconnecting: "पुन्हा जोडत आहे...",
+  disconnected: "खंडित",
+  nurseReplyTitle: "नर्सचा संदेश",
+  sendMessage: "पाठवा",
+  onMyWay: "मी येत आहे",
+  pleaseWait: "कृपया प्रतीक्षा करा",
+  doctorNotified: "डॉक्टरांना कळविले",
+  acknowledge: "स्वीकारा",
+  escalate: "एस्कलेट करा",
+  resolve: "निकाल करा",
+  pending: "प्रलंबित",
+  autoEscalated: "स्वयं-एस्कलेटेड",
+};
+
+const gu: Dict = {
+  appName: "કેરસ્પીક",
+  handMode: "હાથ મોડ",
+  eyeMode: "આંખ મોડ",
+  cctv: "સીસીટીવી",
+  nurse: "નર્સ",
+  ward: "વોર્ડ",
+  logs: "લોગ્સ",
+  report: "અહેવાલ",
+  about: "અમારા વિશે",
+  emergency: "કટોકટી",
+  startCamera: "કેમેરા શરૂ કરો",
+  stopCamera: "કેમેરા બંધ કરો",
+  cameraPermissionHint: "ક્રોમ કેમેરા પરવાનગી માંગશે",
+  loadingModel: "મોડેલ લોડ થાય છે...",
+  downloadingWasm: "AI મોડેલ ડાઉનલોડ થાય છે (ઑફલાઇન માટે)",
+  waitingGesture: "હાવભાવની રાહ જોઈ રહ્યા છીએ...",
+  gestureDetected: "હાવભાવ ઓળખાયો",
+  confidenceLabel: "વિશ્વાસ",
+  faceDetected: "ચહેરો મળ્યો — આંખો પર નજર",
+  noFace: "ચહેરો નથી",
+  noHand: "હાથ મળ્યો નથી",
+  handsDetected: "હાથ મળ્યા",
+  paused: "થોભાવ્યું",
+  voiceAlertsActive: "અવાજ એલર્ટ સક્રિય",
+  replayLastAlert: "છેલ્લી એલર્ટ ફરી",
+  gestureGuide: "હાવભાવ માર્ગદર્શિકા",
+  demoMode: "ડેમો મોડ",
+  demoModeActive: "ડેમો મોડ સક્રિય",
+  sessionShare: "સેશન ID — નર્સ સાથે શેર કરો",
+  copyUrl: "ડેશબોર્ડ URL કૉપિ કરો",
+  copied: "કૉપિ થયું!",
+  live: "લાઇવ",
+  reconnecting: "ફરી જોડાય છે...",
+  disconnected: "ડિસ્કનેક્ટ",
+  nurseReplyTitle: "નર્સનો સંદેશ",
+  sendMessage: "મોકલો",
+  onMyWay: "હું આવી રહ્યો છું",
+  pleaseWait: "કૃપા કરીને રાહ જુઓ",
+  doctorNotified: "ડૉક્ટરને જણાવ્યું",
+  acknowledge: "સ્વીકારો",
+  escalate: "એસ્કેલેટ કરો",
+  resolve: "ઉકેલો",
+  pending: "બાકી",
+  autoEscalated: "સ્વતઃ-એસ્કેલેટેડ",
+};
+
+const kn: Dict = {
+  appName: "ಕೇರ್‌ಸ್ಪೀಕ್",
+  handMode: "ಕೈ ಮೋಡ್",
+  eyeMode: "ಕಣ್ಣಿನ ಮೋಡ್",
+  cctv: "ಸಿಸಿಟಿವಿ",
+  nurse: "ನರ್ಸ್",
+  ward: "ವಾರ್ಡ್",
+  logs: "ಲಾಗ್‌ಗಳು",
+  report: "ವರದಿ",
+  about: "ನಮ್ಮ ಬಗ್ಗೆ",
+  emergency: "ತುರ್ತು",
+  startCamera: "ಕ್ಯಾಮೆರಾ ಪ್ರಾರಂಭಿಸಿ",
+  stopCamera: "ಕ್ಯಾಮೆರಾ ನಿಲ್ಲಿಸಿ",
+  cameraPermissionHint: "ಕ್ರೋಮ್ ಕ್ಯಾಮೆರಾ ಅನುಮತಿ ಕೇಳುತ್ತದೆ",
+  loadingModel: "ಮಾದರಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+  downloadingWasm: "AI ಮಾದರಿ ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ (ಆಫ್‌ಲೈನ್‌ಗಾಗಿ)",
+  waitingGesture: "ಸನ್ನೆಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ...",
+  gestureDetected: "ಸನ್ನೆ ಪತ್ತೆಯಾಗಿದೆ",
+  confidenceLabel: "ವಿಶ್ವಾಸ",
+  faceDetected: "ಮುಖ ಪತ್ತೆಯಾಗಿದೆ — ಕಣ್ಣುಗಳ ಮೇಲೆ ಗಮನ",
+  noFace: "ಮುಖವಿಲ್ಲ",
+  noHand: "ಕೈ ಪತ್ತೆಯಾಗಿಲ್ಲ",
+  handsDetected: "ಕೈಗಳು ಪತ್ತೆಯಾಗಿವೆ",
+  paused: "ವಿರಾಮ",
+  voiceAlertsActive: "ಧ್ವನಿ ಎಚ್ಚರಿಕೆ ಸಕ್ರಿಯ",
+  replayLastAlert: "ಕೊನೆಯ ಎಚ್ಚರಿಕೆ ಪುನಃ",
+  gestureGuide: "ಸನ್ನೆ ಮಾರ್ಗದರ್ಶಿ",
+  demoMode: "ಡೆಮೊ ಮೋಡ್",
+  demoModeActive: "ಡೆಮೊ ಮೋಡ್ ಸಕ್ರಿಯ",
+  sessionShare: "ಸೆಷನ್ ID — ನರ್ಸ್‌ಗೆ ಹಂಚಿ",
+  copyUrl: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ URL ನಕಲಿಸಿ",
+  copied: "ನಕಲಾಗಿದೆ!",
+  live: "ಲೈವ್",
+  reconnecting: "ಮರುಸಂಪರ್ಕ ನಡೆಯುತ್ತಿದೆ...",
+  disconnected: "ಸಂಪರ್ಕ ಕಡಿತ",
+  nurseReplyTitle: "ನರ್ಸ್ ಸಂದೇಶ",
+  sendMessage: "ಕಳುಹಿಸಿ",
+  onMyWay: "ನಾನು ಬರುತ್ತಿದ್ದೇನೆ",
+  pleaseWait: "ದಯವಿಟ್ಟು ಕಾಯಿರಿ",
+  doctorNotified: "ವೈದ್ಯರಿಗೆ ತಿಳಿಸಲಾಗಿದೆ",
+  acknowledge: "ಒಪ್ಪಿಕೊಳ್ಳಿ",
+  escalate: "ಏರಿಸಿ",
+  resolve: "ಪರಿಹರಿಸಿ",
+  pending: "ಬಾಕಿ",
+  autoEscalated: "ಸ್ವಯಂ-ಏರಿಕೆ",
+};
+
+const ml: Dict = {
+  appName: "കെയർസ്പീക്ക്",
+  handMode: "കൈ മോഡ്",
+  eyeMode: "കണ്ണ് മോഡ്",
+  cctv: "സിസിടിവി",
+  nurse: "നഴ്സ്",
+  ward: "വാർഡ്",
+  logs: "ലോഗുകൾ",
+  report: "റിപ്പോർട്ട്",
+  about: "ഞങ്ങളെക്കുറിച്ച്",
+  emergency: "അടിയന്തരം",
+  startCamera: "ക്യാമറ ആരംഭിക്കുക",
+  stopCamera: "ക്യാമറ നിർത്തുക",
+  cameraPermissionHint: "ക്രോം ക്യാമറ അനുമതി ചോദിക്കും",
+  loadingModel: "മോഡൽ ലോഡ് ചെയ്യുന്നു...",
+  downloadingWasm: "AI മോഡൽ ഡൗൺലോഡ് ചെയ്യുന്നു (ഓഫ്‌ലൈനിന്)",
+  waitingGesture: "ആംഗ്യത്തിനായി കാക്കുന്നു...",
+  gestureDetected: "ആംഗ്യം തിരിച്ചറിഞ്ഞു",
+  confidenceLabel: "വിശ്വാസം",
+  faceDetected: "മുഖം കണ്ടെത്തി — കണ്ണുകളിൽ ശ്രദ്ധ",
+  noFace: "മുഖമില്ല",
+  noHand: "കൈ കണ്ടെത്തിയില്ല",
+  handsDetected: "കൈകൾ കണ്ടെത്തി",
+  paused: "താൽക്കാലിക വിരാമം",
+  voiceAlertsActive: "ശബ്ദ അലേർട്ട് സജീവം",
+  replayLastAlert: "അവസാന അലേർട്ട് വീണ്ടും",
+  gestureGuide: "ആംഗ്യ ഗൈഡ്",
+  demoMode: "ഡെമോ മോഡ്",
+  demoModeActive: "ഡെമോ മോഡ് സജീവം",
+  sessionShare: "സെഷൻ ID — നഴ്സുമായി പങ്കിടുക",
+  copyUrl: "ഡാഷ്ബോർഡ് URL പകർത്തുക",
+  copied: "പകർത്തി!",
+  live: "ലൈവ്",
+  reconnecting: "വീണ്ടും കണക്റ്റ് ചെയ്യുന്നു...",
+  disconnected: "വിച്ഛേദിച്ചു",
+  nurseReplyTitle: "നഴ്സിന്റെ സന്ദേശം",
+  sendMessage: "അയക്കുക",
+  onMyWay: "ഞാൻ വരുന്നു",
+  pleaseWait: "ദയവായി കാത്തിരിക്കൂ",
+  doctorNotified: "ഡോക്ടറെ അറിയിച്ചു",
+  acknowledge: "അംഗീകരിക്കുക",
+  escalate: "ഉയർത്തുക",
+  resolve: "പരിഹരിക്കുക",
+  pending: "തീർപ്പുകൂടാത്ത",
+  autoEscalated: "സ്വയം-ഉയർത്തൽ",
+};
+
+const pa: Dict = {
+  appName: "ਕੇਅਰਸਪੀਕ",
+  handMode: "ਹੱਥ ਮੋਡ",
+  eyeMode: "ਅੱਖ ਮੋਡ",
+  cctv: "ਸੀਸੀਟੀਵੀ",
+  nurse: "ਨਰਸ",
+  ward: "ਵਾਰਡ",
+  logs: "ਲੌਗ",
+  report: "ਰਿਪੋਰਟ",
+  about: "ਸਾਡੇ ਬਾਰੇ",
+  emergency: "ਐਮਰਜੈਂਸੀ",
+  startCamera: "ਕੈਮਰਾ ਸ਼ੁਰੂ ਕਰੋ",
+  stopCamera: "ਕੈਮਰਾ ਬੰਦ ਕਰੋ",
+  cameraPermissionHint: "ਕ੍ਰੋਮ ਕੈਮਰਾ ਇਜਾਜ਼ਤ ਮੰਗੇਗਾ",
+  loadingModel: "ਮਾਡਲ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+  downloadingWasm: "AI ਮਾਡਲ ਡਾਊਨਲੋਡ ਹੋ ਰਿਹਾ ਹੈ (ਆਫ਼ਲਾਈਨ ਲਈ)",
+  waitingGesture: "ਇਸ਼ਾਰੇ ਦੀ ਉਡੀਕ...",
+  gestureDetected: "ਇਸ਼ਾਰਾ ਪਛਾਣਿਆ ਗਿਆ",
+  confidenceLabel: "ਭਰੋਸਾ",
+  faceDetected: "ਚਿਹਰਾ ਮਿਲਿਆ — ਅੱਖਾਂ 'ਤੇ ਨਜ਼ਰ",
+  noFace: "ਚਿਹਰਾ ਨਹੀਂ",
+  noHand: "ਹੱਥ ਨਹੀਂ ਮਿਲਿਆ",
+  handsDetected: "ਹੱਥ ਮਿਲੇ",
+  paused: "ਰੁਕਿਆ",
+  voiceAlertsActive: "ਆਵਾਜ਼ ਅਲਰਟ ਸਰਗਰਮ",
+  replayLastAlert: "ਆਖਰੀ ਅਲਰਟ ਦੁਬਾਰਾ",
+  gestureGuide: "ਇਸ਼ਾਰਾ ਗਾਈਡ",
+  demoMode: "ਡੈਮੋ ਮੋਡ",
+  demoModeActive: "ਡੈਮੋ ਮੋਡ ਸਰਗਰਮ",
+  sessionShare: "ਸੈਸ਼ਨ ID — ਨਰਸ ਨਾਲ ਸਾਂਝਾ ਕਰੋ",
+  copyUrl: "ਡੈਸ਼ਬੋਰਡ URL ਕਾਪੀ ਕਰੋ",
+  copied: "ਕਾਪੀ ਹੋ ਗਿਆ!",
+  live: "ਲਾਈਵ",
+  reconnecting: "ਦੁਬਾਰਾ ਜੁੜ ਰਿਹਾ ਹੈ...",
+  disconnected: "ਡਿਸਕਨੈਕਟ",
+  nurseReplyTitle: "ਨਰਸ ਦਾ ਸੁਨੇਹਾ",
+  sendMessage: "ਭੇਜੋ",
+  onMyWay: "ਮੈਂ ਆ ਰਿਹਾ ਹਾਂ",
+  pleaseWait: "ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ",
+  doctorNotified: "ਡਾਕਟਰ ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ",
+  acknowledge: "ਮੰਨੋ",
+  escalate: "ਐਸਕੇਲੇਟ ਕਰੋ",
+  resolve: "ਹੱਲ ਕਰੋ",
+  pending: "ਬਾਕੀ",
+  autoEscalated: "ਸਵੈ-ਐਸਕੇਲੇਟਡ",
+};
+
+const DICTS: Partial<Record<SupportedLanguage, Dict>> = {
+  "en-US": en,
+  "hi-IN": hi,
+  "bn-IN": bn,
+  "ta-IN": ta,
+  "te-IN": te,
+  "mr-IN": mr,
+  "gu-IN": gu,
+  "kn-IN": kn,
+  "ml-IN": ml,
+  "pa-IN": pa,
+};
+export const I18N_LANGUAGES = Object.keys(DICTS) as SupportedLanguage[];
+
+export function t(lang: SupportedLanguage | string, key: UIKey): string {
+  const dict = DICTS[(lang as SupportedLanguage)] ?? en;
+  return dict[key] ?? en[key];
+}
+
+/* ── reactive language store ─────────────────────────────────────
+ * Lets React components re-render the moment the language changes
+ * (tts.setLanguage notifies). Snapshot = persisted language code. */
+const langListeners = new Set<() => void>();
+
+export function subscribeUiLanguage(cb: () => void): () => void {
+  langListeners.add(cb);
+  return () => {
+    langListeners.delete(cb);
+  };
+}
+
+export function getUiLanguageSnapshot(): string {
+  if (typeof window === "undefined") return "en-US";
+  try {
+    return localStorage.getItem("carespeak_language") ?? "en-US";
+  } catch {
+    return "en-US";
+  }
+}
+
+export function notifyUiLanguageChanged(): void {
+  for (const cb of langListeners) cb();
+}

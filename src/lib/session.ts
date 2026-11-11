@@ -1,0 +1,174 @@
+import { SessionInfo } from "@/types";
+
+const SESSION_KEY = "carespeak_session";
+const DEVICE_KEY = "carespeak_device_id";
+const ID_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no ambiguous I,O,0,1
+
+function randomId(length = 6): string {
+  const bytes = new Uint8Array(length);
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  let out = "";
+  for (let i = 0; i < length; i++) out += ID_ALPHABET[bytes[i] % ID_ALPHABET.length];
+  return out;
+}
+
+export function generateDeviceId(): string {
+  if (typeof window !== "undefined") {
+    try {
+      const existing = localStorage.getItem(DEVICE_KEY);
+      if (existing) return existing;
+    } catch {}
+  }
+  const id = `device_${Date.now().toString(36)}_${randomId(6).toLowerCase()}`;
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(DEVICE_KEY, id);
+    } catch {}
+  }
+  return id;
+}
+
+export function getOrCreateSession(): SessionInfo {
+  if (typeof window === "undefined") {
+    return { sessionId: randomId(), deviceId: "server", createdAt: Date.now() };
+  }
+  try {
+    const stored = localStorage.getItem(SESSION_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored) as SessionInfo;
+      if (parsed.sessionId && parsed.deviceId) return parsed;
+    }
+  } catch {}
+  const session: SessionInfo = {
+    sessionId: randomId(),
+    deviceId: generateDeviceId(),
+    createdAt: Date.now(),
+  };
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch {}
+  return session;
+}
+
+/** Pair this device to an existing session (QR scan / manual entry) */
+export function setSessionId(sessionId: string): SessionInfo {
+  const clean = sessionId.trim().toUpperCase();
+  // Server (SSR / tests): there is no device or storage, so stay side-effect
+  // free and consistent with getOrCreateSession() instead of minting an id.
+  if (typeof window === "undefined") {
+    return { sessionId: clean, deviceId: "server", createdAt: Date.now() };
+  }
+  const session: SessionInfo = {
+    sessionId: clean,
+    deviceId: generateDeviceId(),
+    createdAt: Date.now(),
+  };
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch {}
+  return session;
+}
+
+export function clearSession(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(ACTIVE_CARE_KEY);
+  } catch {}
+}
+
+export function getSession(): SessionInfo | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(SESSION_KEY);
+    if (stored) return JSON.parse(stored) as SessionInfo;
+  } catch {}
+  return null;
+}
+
+const ACTIVE_CARE_KEY = "carespeak_active_care_session";
+
+/**
+ * The care session the nurse portal is currently connected to.
+ *
+ * The portal writes this whenever it pairs, so any other CareSpeak surface in
+ * the same browser (for example the free browser call) can pick up the exact
+ * session without asking the nurse to choose a patient again.
+ */
+export interface ActiveCareSession {
+  sessionId: string;
+  pair: string | null;
+  at: number;
+}
+
+export function rememberCareSession(sessionId: string, pair?: string | null): void {
+  if (typeof window === "undefined") return;
+  const clean = sessionId.trim().toUpperCase();
+  if (!/^[A-Z0-9_-]{3,32}$/.test(clean)) return;
+  try {
+    // Preserve a previously-known pair for the same session when the caller did not
+    // supply one, so a bare ?session= link cannot wipe out the QR pair token.
+    let nextPair = pair?.trim() || null;
+    if (!nextPair) {
+      try {
+        const raw = localStorage.getItem(ACTIVE_CARE_KEY);
+        if (raw) {
+          const prev = JSON.parse(raw) as ActiveCareSession;
+          if (prev?.sessionId?.trim().toUpperCase() === clean && prev.pair) {
+            nextPair = prev.pair.trim() || null;
+          }
+        }
+      } catch {}
+    }
+    const value: ActiveCareSession = { sessionId: clean, pair: nextPair, at: Date.now() };
+    localStorage.setItem(ACTIVE_CARE_KEY, JSON.stringify(value));
+  } catch {}
+}
+
+export function getActiveCareSession(): ActiveCareSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(ACTIVE_CARE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as ActiveCareSession;
+    const clean = parsed?.sessionId?.trim().toUpperCase() ?? "";
+    if (!/^[A-Z0-9_-]{3,32}$/.test(clean)) return null;
+    return { sessionId: clean, pair: parsed.pair?.trim() || null, at: parsed.at ?? 0 };
+  } catch {
+    return null;
+  }
+}
+
+const ORIGIN_KEY = "carespeak_dashboard_origin";
+
+/**
+ * Origin used inside pairing URLs / QR codes. Defaults to the current origin,
+ * but when the patient device is on localhost the QR would be useless for
+ * other devices — the user can persist a reachable origin (e.g. http://192.168.1.5:3000).
+ */
+export function getDashboardOrigin(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    const saved = localStorage.getItem(ORIGIN_KEY);
+    if (saved && /^https?:\/\//.test(saved)) return saved.replace(/\/+$/, "");
+  } catch {}
+  return window.location.origin;
+}
+
+export function setDashboardOrigin(origin: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const clean = origin.trim().replace(/\/+$/, "");
+    if (clean && /^https?:\/\//.test(clean)) localStorage.setItem(ORIGIN_KEY, clean);
+    else localStorage.removeItem(ORIGIN_KEY);
+  } catch {}
+}
+
+export function getNurseDashboardUrl(sessionId: string): string {
+  if (typeof window === "undefined") return "";
+  return `${getDashboardOrigin()}/nurse-view?session=${sessionId}`;
+}

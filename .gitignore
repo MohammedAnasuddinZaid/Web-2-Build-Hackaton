@@ -1,0 +1,24 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+backend/.venv/
+backend/models/
+backend/data/
+backend/logs/
+backend/runtime/
+backend/*.wav
+backend/*.pid
+backend/*.log
+backend/*.json
+
+# Web Voice Call — Demo local persistence (never commit session data)
+.care-data/
